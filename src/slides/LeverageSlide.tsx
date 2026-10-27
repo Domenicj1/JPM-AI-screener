@@ -3,6 +3,7 @@ import { Eyebrow, Headline, SourceNote, StatusPill, Summary } from '../component
 import { leverageStatus } from '../lib/covenants'
 import { ratio } from '../lib/format'
 import type { CompanyReport } from '../types'
+import { niceTicks } from '../lib/ticks'
 
 const PILL_TEXT = { pass: 'Within covenant', watch: 'Near covenant', fail: 'Above covenant' }
 
@@ -12,7 +13,7 @@ export function LeverageSlide({ report }: { report: CompanyReport }) {
   const first = history[0]
   const status = leverageStatus(current.value, covenantMax)
   const direction = current.value < first.value ? 'down' : current.value > first.value ? 'up' : 'flat'
-  const yMax = Math.ceil(Math.max(...history.map((h) => h.value), covenantMax) + 0.3)
+  const { hi: yMax, ticks } = niceTicks(0, Math.max(...history.map((h) => h.value), covenantMax) + 0.3)
 
   return (
     <div className="slide-body">
@@ -33,7 +34,7 @@ export function LeverageSlide({ report }: { report: CompanyReport }) {
           width={1168}
           height={360}
           yMax={yMax}
-          yTicks={Array.from({ length: yMax + 1 }, (_, i) => i)}
+          yTicks={ticks}
           formatTick={(v) => `${v}x`}
           formatValue={(v) => ratio(v)}
           threshold={{ value: covenantMax, label: ['Covenant max', ratio(covenantMax)] }}

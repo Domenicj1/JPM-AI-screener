@@ -3,6 +3,7 @@ import { Eyebrow, SourceNote, StatTile, StatusPill, Summary } from '../component
 import { largestIndex } from '../lib/covenants'
 import { billions, percent } from '../lib/format'
 import type { CompanyReport } from '../types'
+import { niceTicks } from '../lib/ticks'
 
 export function DebtSlide({ report }: { report: CompanyReport }) {
   const d = report.debt
@@ -11,8 +12,7 @@ export function DebtSlide({ report }: { report: CompanyReport }) {
   const wall = singleYears[largestIndex(singleYears.map((m) => m.value))]
   const change = d.totalDebt < d.totalDebtYearAgo ? 'down' : 'up'
   const maxValue = Math.max(...d.maturities.map((m) => m.value))
-  const yMax = maxValue * 1.15
-  const ticks = Array.from({ length: Math.floor(yMax) + 1 }, (_, i) => i)
+ const { hi: yMax, ticks } = niceTicks(0, maxValue * 1.15)
 
   return (
     <div className="slide-body">

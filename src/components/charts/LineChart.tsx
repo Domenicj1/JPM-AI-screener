@@ -56,9 +56,11 @@ export function LineChart({ data, width, height, yMin, yMax, yTicks, formatTick,
         className="chart-threshold"
       />
       <ThresholdLabel x={width - PAD.right + 14} y={y(floor.value)} lines={floor.label} />
-      <text x={width - PAD.right - 8} y={y(floor.value) + 30} className="chart-zone-label" textAnchor="end">
-        {floor.zoneLabel}
-      </text>
+      {y(yMin) - y(floor.value) > 40 && (
+        <text x={width - PAD.right - 8} y={y(floor.value) + 30} className="chart-zone-label" textAnchor="end">
+          {floor.zoneLabel}
+        </text>
+      )}
 
       <path d={path} className="chart-line" />
       {data.map((d, i) => (
