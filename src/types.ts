@@ -1,9 +1,8 @@
 // Shared data shapes for a company report.
 //
-// Everything a slide needs lives in a CompanyReport. Today the reports come
-// from sample data (src/data/sampleCompanies.ts). Later, the extraction layer
-// (SEC EDGAR, FMP, news APIs) will build this same shape, so the slides do
-// not need to change when real data arrives.
+// Everything a slide needs lives in a CompanyReport. Sample reports come from
+// src/data/sampleCompanies.ts; real ones are built on the server from SEC
+// EDGAR data and Claude (server/report.ts). Both use this same shape.
 
 /** Traffic-light marker shown next to a metric. */
 export type Status = 'pass' | 'watch' | 'fail'
@@ -55,8 +54,8 @@ export interface DebtData {
   cash: number
   /** Weighted average interest rate, as a percent (5.1 means 5.1%). */
   avgRate: number
-  /** Share of debt at floating rates, as a percent. */
-  floatingShare: number
+  /** Share of debt at floating rates, as a percent. null when the filing does not say. */
+  floatingShare: number | null
   /** Principal due per year, in billions, in date order. */
   maturities: { label: string; value: number }[]
   summary: string
@@ -65,10 +64,10 @@ export interface DebtData {
 
 export interface ExposureData {
   period: string
-  /** Percent of revenue from the largest customer. */
-  largestCustomerShare: number
-  /** Percent of revenue from the top three customers. */
-  top3CustomerShare: number
+  /** Percent of revenue from the largest customer. null when not disclosed. */
+  largestCustomerShare: number | null
+  /** Percent of revenue from the top three customers. null when not disclosed. */
+  top3CustomerShare: number | null
   /** Typical quarterly revenue swing, as +/- percent. */
   quarterlySwing: number
   seasonalNote: string

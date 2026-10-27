@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { searchCompanies, type CompanyMatch } from '../lib/reportService'
 import type { Period } from '../types'
 
@@ -10,7 +10,25 @@ export function SearchPanel({ onGenerate }: Props) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<CompanyMatch | null>(null)
   const [period, setPeriod] = useState<Period>('ttm')
-  const matches = searchCompanies(query)
+  const [results, setResults] = useState<{ query: string; matches: CompanyMatch[]; error?: string }>({
+    query: '',
+    matches: [],
+  })
+  const matches = results.matches
+  const searching = results.query !== query
+
+  // Search after a short pause in typing, and ignore answers to older queries.
+  useEffect(() => {
+    let current = true
+    const timer = setTimeout(async () => {
+      const found = await searchCompanies(query)
+      if (current) setResults({ query, ...found })
+    }, 250)
+    return () => {
+      current = false
+      clearTimeout(timer)
+    }
+  }, [query])
 
   return (
     <div className="search">
@@ -27,7 +45,7 @@ export function SearchPanel({ onGenerate }: Props) {
         <input
           id="company-search"
           className="search-input"
-          placeholder="e.g. Northwind or NWDV"
+          placeholder="e.g. Apple, AAPL, or sample NWDV"
           value={query}
           autoFocus
           onChange={(e) => {
@@ -49,8 +67,9 @@ export function SearchPanel({ onGenerate }: Props) {
               </button>
             </li>
           ))}
-          {matches.length === 0 && <li className="matches-empty">No sample companies match “{query}”.</li>}
+          {matches.length === 0 && !searching && query && <li className="matches-empty">No companies match “{query}”.</li>}
         </ul>
+        {results.error && !searching && <p className="search-note">Company search unavailable: {results.error}</p>}
 
         <fieldset className="period">
           <legend className="field-label">Period</legend>
@@ -71,7 +90,9 @@ export function SearchPanel({ onGenerate }: Props) {
         >
           Generate deck
         </button>
-        <p className="search-note">Prototype: uses illustrative sample data for two fictional companies.</p>
+        <p className="search-note">
+          Real companies use SEC EDGAR data and Claude-written summaries. NWDV and BWLX are fictional samples.
+        </p>
       </div>
     </div>
   )

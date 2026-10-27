@@ -27,7 +27,10 @@ export function DebtSlide({ report }: { report: CompanyReport }) {
           label={`net debt (total debt minus ${billions(d.cash)} cash)`}
         />
         <StatTile value={percent(d.avgRate)} label="average interest rate" />
-        <StatTile value={percent(d.floatingShare)} label="floating rate (rises if rates rise)" />
+        <StatTile
+          value={d.floatingShare === null ? 'n/d' : percent(d.floatingShare)}
+          label={d.floatingShare === null ? 'floating rate share not disclosed' : 'floating rate (rises if rates rise)'}
+        />
       </div>
       <div>
         <StatusPill status="watch">
