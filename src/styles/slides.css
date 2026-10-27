@@ -351,13 +351,18 @@
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* One row exactly as tall as the space left, so the takeaways list has a
+     fixed height that useFitText can measure against. */
+  grid-template-rows: minmax(0, 1fr);
   gap: 48px;
   flex: 1;
+  min-height: 0;
 }
 .summary-grid section {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-height: 0;
 }
 .scorecard {
   border-collapse: collapse;
@@ -382,6 +387,9 @@
   font-size: 18px;
 }
 .takeaways {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
   margin: 0;
   padding-left: 26px;
   font-size: 22px;

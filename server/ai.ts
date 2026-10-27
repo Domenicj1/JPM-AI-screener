@@ -13,7 +13,9 @@ export const MODEL = 'claude-opus-5-5'
 const Share = z.object({ label: z.string(), percent: z.number() })
 
 export const AiOutput = z.object({
-  takeaways: z.array(z.string()).describe('Exactly 5 takeaways, each one sentence of at most 18 words (under 110 characters) for a credit analyst, most important first.'),
+  takeaways: z
+    .array(z.string())
+    .describe('Exactly 5 takeaways for a credit analyst, most important first. Each is one sentence of at most 18 words (under 110 characters).'),
   leverageSummary: z.string(),
   fccrSummary: z.string(),
   debtSummary: z.string(),
@@ -57,6 +59,7 @@ Rules:
 - The computed metrics are final. Quote them exactly as given; never recompute or contradict them.
 - Take every other fact from the 10-K text only. If the 10-K does not state something, return null (or an empty list) rather than estimating.
 - Summaries are one or two plain sentences (under 45 words) that explain what drives the number and what to watch. No hedging filler, no markdown.
+- Each takeaway is one sentence of at most 18 words (under 110 characters), so all five fit on the summary slide.
 - Reputation comes from Item 3 Legal Proceedings and the contingencies note: rate Low when nothing material is pending, Medium for notable but non-material matters, High for matters the company calls material, government enforcement, or going-concern doubt. Note that no news search was done.`
 
 export async function writeNarrative(input: { company: string; metrics: unknown; tenK: string }): Promise<AiOutput> {
