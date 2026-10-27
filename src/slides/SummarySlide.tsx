@@ -1,4 +1,5 @@
 import { Eyebrow, SourceNote, StatusPill } from '../components/SlideParts'
+import { useFitText } from '../components/useFitText'
 import { customerConcentrationStatus, fccrStatus, leverageStatus, reputationStatus } from '../lib/covenants'
 import { billions, ratio } from '../lib/format'
 import type { CompanyReport, Status } from '../types'
@@ -7,6 +8,8 @@ const STATUS_WORD: Record<Status, string> = { pass: 'Pass', watch: 'Watch', fail
 
 /** Key metrics panel plus the plain-language takeaways. */
 export function SummarySlide({ report }: { report: CompanyReport }) {
+  // Long takeaways shrink from 22px down to 18px before they would run off the slide.
+  const takeawaysRef = useFitText<HTMLUListElement>(22, 18, report.takeaways)
   const lev = report.leverage.history.at(-1)!.value
   const fccr = report.fccr.history.at(-1)!.value
   const d = report.debt
@@ -69,7 +72,7 @@ export function SummarySlide({ report }: { report: CompanyReport }) {
         </section>
         <section>
           <h3 className="chart-title">Key takeaways</h3>
-          <ul className="takeaways">
+          <ul ref={takeawaysRef} className="takeaways">
             {report.takeaways.map((t) => (
               <li key={t}>{t}</li>
             ))}
