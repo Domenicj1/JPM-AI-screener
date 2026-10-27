@@ -27,12 +27,12 @@ export function SummarySlide({ report }: { report: CompanyReport }) {
     {
       metric: 'Net debt',
       value: billions(d.totalDebt - d.cash),
-      detail: `${d.floatingShare}% floating`,
-      status: d.floatingShare > 50 ? 'watch' : 'pass',
+      detail: d.floatingShare === null ? 'floating share n/d' : `${d.floatingShare}% floating`,
+      status: d.floatingShare !== null && d.floatingShare > 50 ? 'watch' : 'pass',
     },
     {
       metric: 'Largest customer',
-      value: `${report.exposure.largestCustomerShare}%`,
+      value: report.exposure.largestCustomerShare === null ? 'n/d' : `${report.exposure.largestCustomerShare}%`,
       detail: 'of revenue',
       status: customerConcentrationStatus(report.exposure.largestCustomerShare),
     },

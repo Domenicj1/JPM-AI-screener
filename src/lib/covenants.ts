@@ -4,6 +4,10 @@ import type { Status } from '../types'
 // they are easy to unit test (see covenants.test.ts) and easy to tune once
 // the JPM analysts tell us the thresholds they actually use.
 
+/** Default covenant levels used for real companies. Confirm with the JPM analysts. */
+export const LEVERAGE_COVENANT_MAX = 3.5
+export const FCCR_COVENANT_MIN = 1.25
+
 /** How close to the limit (in turns, "x") still counts as "watch". */
 export const LEVERAGE_WATCH_BUFFER = 0.25
 export const FCCR_WATCH_BUFFER = 0.15
@@ -24,8 +28,8 @@ export function fccrStatus(value: number, covenantMin: number): Status {
   return 'pass'
 }
 
-export function customerConcentrationStatus(largestCustomerShare: number): Status {
-  return largestCustomerShare > CUSTOMER_CONCENTRATION_LIMIT ? 'watch' : 'pass'
+export function customerConcentrationStatus(largestCustomerShare: number | null): Status {
+  return largestCustomerShare !== null && largestCustomerShare > CUSTOMER_CONCENTRATION_LIMIT ? 'watch' : 'pass'
 }
 
 export function reputationStatus(level: 'Low' | 'Medium' | 'High'): Status {
