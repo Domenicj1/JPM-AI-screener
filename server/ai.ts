@@ -13,7 +13,7 @@ export const MODEL = 'claude-opus-5-5'
 const Share = z.object({ label: z.string(), percent: z.number() })
 
 export const AiOutput = z.object({
-  takeaways: z.array(z.string()).describe('Exactly 5 one-sentence takeaways for a credit analyst, most important first.'),
+  takeaways: z.array(z.string()).describe('Exactly 5 takeaways, each one sentence of at most 18 words (under 110 characters) for a credit analyst, most important first.'),
   leverageSummary: z.string(),
   fccrSummary: z.string(),
   debtSummary: z.string(),
